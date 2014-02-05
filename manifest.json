@@ -2,8 +2,9 @@
     "manifest_version": 2,
 
     "name": "Video Tool Tip",
+    "short_name": "Video Tool Tip",
     "description": "This opens an embeded muted YouTube player when the user mouses over a YouTube link",
-    "version": "1.0",
+    "version": "1.1",
 
     "permissions": [
             "tabs", "http://www.youtube.com/","activeTab","browsingData"
@@ -14,10 +15,11 @@
     	"ytpopup.js"
   	],
 
+
     "content_scripts": [
         {
-            "matches": ["http://*/*","https://*/*"],
-
+            "matches": ["http://*/*", "https://*/*"],
+            "exclude_matches": ["http://www.youtube.com/*", "https://www.youtube.com/*"],
             "js" : [ "jquery-1.10.2.js", "jquery-ui-1.10.2.js", "contentscript.js" ],
             "css" : [ "jquery-ui-1.10.2.css" ]
         }

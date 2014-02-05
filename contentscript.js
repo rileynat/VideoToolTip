@@ -1,36 +1,48 @@
 $(document).ready(function () {
 	
-	var url = chrome.extension.getURL("ytpopup.html");
 		
-	$('body').append("<div id='YouTubePopup' style='pointer-events:none'>Dialog Content</div>"); 
+	$('body').prepend("<div id='YouTubePopup' style='pointer-events:none'>Dialog Content</div>"); 
 	
-	 var dialogvar = $("#YouTubePopup").load(url).dialog({
-	 //var dialogvar = $("#YouTubePopup").dialog({
-	 	height:390,
-	 	width:640,
-	 	dialogClass: "no-close",
-        autoOpen: false,
-        show: "blind"
-    });
+     //var dialogvar = $("#YouTubePopup").html("<iframe width='560' height='315' src='//www.youtube.com/embed/"+videoID+"' frameborder='0' allowfullscreen></iframe>").dialog({
+     // var dialogvar = $("#YouTubePopup").load(url).dialog({
+                    var dialogvar = $("#YouTubePopup").dialog({
+                        height:390,
+                        width:640,
+                        dialogClass: "no-close",
+                        autoOpen: false,
+                        show: "blind"
+                    });
+
+	 
     
     $(document).mousemove(function (e) {
-        dialogvar.dialog("option", { position: [e.pageX+20, e.pageY+10] });
+        dialogvar.dialog("option", { position: [e.pageX+20, e.pageY-10] });
     });
 
 	
    
     $("a").bind("mouseover", function () {
     	if ( this.href.indexOf("https://www.youtube.com/watch") === 0 ||
-    	 	this.href.indexOf("http://www.youtube.com/watch") === 0 ) {
-    	 		if ( dialogvar.dialog( "isOpen" )===false) {
+    	 	 this.href.indexOf("http://www.youtube.com/watch")  === 0 ) {
+            //chrome.runtime.sendMessage({type: "opendialog"});
+
+                    var vidlink = this.href;
+                    vidid = vidlink.substr(vidlink.indexOf("watch?v=")+8, 11);
     	 		
+                    // dialogvar.html('<body style="margin:8px; display:block; min-height:450px; min-width:640px; background-color:red; pointer-events:none"> <div id="player"></div><script>var myvideoid = "'+vidid+'";window.myvar = myvideoid;console.log(myvideoid);</script><script src="chrome-extension://jplakpohanfhaaijkleofdgnldcmcckg/ytpopup.js"></script>');
+                    //dialogvar.html('<body style="margin:8px; display:block; min-height:450px; min-width:640px; background-color:red; pointer-events:none"> <div id="player"></div><iframe width="640" height="390" src="//www.youtube.com/embed/'+vidid+'?autoplay=1" frameborder="0" allowfullscreen></iframe>');
+                     dialogvar.html('<body style="margin:8px; display:block; min-height:450px; min-width:640px; background-color:red; pointer-events:none"> <div id="ytplayer"></div> <embed id="ytplayer" width="640px" height="390px" allowscriptaccess="always" quality="high" bgcolor="#000000" name="ytplayer" style="" src="//www.youtube.com/embed/'+vidid+'?enablejsapi=1&version=3&playerapiid=ytplayer&autoplay=1&controls=0">');
+                    if ( dialogvar.dialog( "isOpen" )===false) {
+
+
     	 			// var string = this.href;
 //     	 			string.replace("https://www.youtube.com/watch?v=", "");
 //     	 			
-//     	 			console.log(string);
+     	 			// console.log("this");
 //     	 			
 //     	 			dialogvar.html('<iframe id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/M7lc1UVf-VE?autoplay=1&muting=1" frameborder="0"/>');
-        			dialogvar.html().("body").prepend('<div id="videoID"> This is a video id</div>');
+        			//$('body').append("<div id='dialogDiv'>Dialog Div<div/>");
+        			//dialogvar.html('<div id="player"></div><script type="text/javascript">var tag;var firstScriptTag;var tag = document.createElement("script");tag.src = "https://www.youtube.com/iframe_api";var firstScriptTag = document.getElementsByTagName("script")[0];firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);var player;function onYouTubeIframeAPIReady() {  	player = new YT.Player("player", {    height: "390",  width: "640",    videoId: "M7lc1UVf-VE",    playerVars: { "autoplay": 1, "controls": 0 },    events: {      "onReady": onPlayerReady,      "onStateChange": onPlayerStateChange    }  });}function onPlayerReady(event) {  player.mute();  player.playVideo();}function onPlayerStateChange(event) {  player.playVideo();}function stopVideo() {  player.stopVideo();}</script>');
         			dialogvar.dialog('open'); // open
         		
         			
@@ -39,17 +51,27 @@ $(document).ready(function () {
     	 	}
     	 	
     	 	
-    	 else if ( this.data-href.indexOf("https://www.youtube.com/watch") === 0 ||
-    	 	this.data-href.indexOf("http://www.youtube.com/watch") === 0) {
+    	 else if ( $(this).data("href") && (this.data-href.indexOf("https://www.youtube.com/watch") === 0 ||
+                      this.data-href.indexOf("http://www.youtube.com/watch") === 0)) {
+            var vidlink = this.data-href;
+            vidid = vidlink.substr(vidlink.indexOf("watch?v=")+8, 11);
+            dialogvar.html('<body style="margin:8px; display:block; min-height:450px; min-width:640px; background-color:red; pointer-events:none"> <div id="ytplayer"></div> <embed id="ytplayer" width="640px" height="390px" allowscriptaccess="always" quality="high" bgcolor="#000000" name="ytplayer" style="" src="//www.youtube.com/embed/'+vidid+'?enablejsapi=1&version=3&playerapiid=ytplayer&autoplay=1&controls=0>')
+
     	 	if ( dialogvar.dialog( "isOpen" )===false) {
+
+
+
         		dialogvar.dialog('open'); // open
         		
-        		dialogvar.dialog('option', 'title', this.data-href);
-        		
-        	}
+        		}
+        }
+
+        else {
+            dialogvar.dialog('close');
         }
     });
     $("a").bind("mouseleave", function () {
+        dialogvar.html('<div></div>');
         dialogvar.dialog('close'); // open
     });
 });

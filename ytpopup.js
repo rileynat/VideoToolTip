@@ -22,6 +22,8 @@ var firstScriptTag;
 // });
 
 
+//elem = document.getElementById('dialogdiv');
+//console.log(elem);
 
 var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
@@ -32,10 +34,12 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 //    after the API code downloads.
 var player;
 function onYouTubeIframeAPIReady() {
+  console.log(window.myvar);
   	player = new YT.Player('player', {
     height: '390',
+    //height: '450',
     width: '640',
-    videoId: 'M7lc1UVf-VE',
+    videoId: myvideoid,
     playerVars: { 'autoplay': 1, 'controls': 0 },
     events: {
       'onReady': onPlayerReady,
